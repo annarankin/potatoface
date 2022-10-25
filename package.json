@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "konva": "^8.3.13",
+    "parcel": "^2.7.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-konva": "^18.2.3"
+  },
+  "devDependencies": {
+    "process": "^0.11.10"
+  }
+}
