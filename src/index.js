@@ -1,21 +1,18 @@
 console.log("hi");
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Stage, Star, Layer, Image, Transformer } from "react-konva";
+import { Stage, Star, Layer, Image, Transformer, Text } from "react-konva";
 import useImage from "use-image";
-import * as kevImgs from "./images/kev/*.png";
-import * as courtImgs from "./images/court/*.png";
+import * as faceImgs from "./images/face-parts/*.png";
+import * as accessoryImgs from "./images/accessories/*.png";
 import blankFace from "./images/blank-face.png";
-import beard from "./images/beard.png";
 
-console.log(kevImgs);
+const faceUrls = Object.keys(faceImgs).map((k) => faceImgs[k]);
+const accessoryUrls = Object.keys(accessoryImgs).map((k) => accessoryImgs[k]);
 
-const imgUrls = [
-  ...Object.keys(kevImgs).map((k) => kevImgs[k]),
-  ...Object.keys(courtImgs).map((k) => courtImgs[k]),
-];
-
-const OFFSET = 100;
+const OFFSET = 150;
+const FACE_OFFSET = 600;
+const ACC_OFFSET = 700;
 
 const SimpleImage = ({ filepath, ...props }) => {
   const [image] = useImage(filepath);
@@ -31,7 +28,6 @@ const ResizableImage = ({ filepath, ...props }) => {
 
   useEffect(() => {
     if (selected) {
-      // we need to attach transformer manually
       transformRef.current.nodes([shapeRef.current]);
       transformRef.current.getLayer().batchDraw();
     }
@@ -63,16 +59,44 @@ const ResizableImage = ({ filepath, ...props }) => {
 };
 
 const App = () => {
-  const images = imgUrls.map((filepath, i) => (
-    <ResizableImage draggable filepath={filepath} x={0 + i * OFFSET} y={0} />
-  ));
+  const faceParts = faceUrls.map((filepath, i) => {
+    const column = (i % 3) + 1
+    const row = Math.floor(i / 3)
+    return (
+    <ResizableImage
+      draggable
+      filepath={filepath}
+      x={FACE_OFFSET + (column * OFFSET)}
+      y={row * OFFSET}
+
+    />
+  )});
+  const accessories = accessoryUrls.map((filepath, i) => {
+    const column = (i % 2)
+    const row = Math.floor(i / 2)
+    return (
+    <ResizableImage
+      draggable
+      filepath={filepath}
+      x={column * (OFFSET * 2)}
+      y={ACC_OFFSET + (row * OFFSET)}
+
+    />
+  )});
+  
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <SimpleImage filepath={blankFace} height={400} width={400} />
-        <ResizableImage filepath={beard} />
-        {images}
+        <SimpleImage
+          filepath={blankFace}
+          height={400}
+          width={400}
+          x={100}
+          y={200}
+        />
+        {accessories}
+        {faceParts}
       </Layer>
     </Stage>
   );
